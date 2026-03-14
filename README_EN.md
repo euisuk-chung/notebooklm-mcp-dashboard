@@ -15,15 +15,24 @@ A web dashboard built to address common pain points with NotebookLM — no searc
 
 ## Screenshots
 
-<!-- Place screenshots in the docs/imgs/ folder -->
-
-| Notebook List (List View) | Notebook Detail + Content Studio |
-|:---:|:---:|
-| ![Notebook List](docs/imgs/notebook-list.png) | ![Notebook Detail](docs/imgs/notebook-detail.png) |
-
-| Add Source / Web Research | Notebook Query (Q&A) |
-|:---:|:---:|
-| ![Add Source](docs/imgs/add-source.png) | ![Query Panel](docs/imgs/query-panel.png) |
+<table>
+  <tr>
+    <td align="center"><b>Notebook List (List View)</b></td>
+    <td align="center"><b>Notebook Detail + Content Studio</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/imgs/notebook-list.png" width="480" /></td>
+    <td><img src="docs/imgs/notebook-detail.png" width="480" /></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Add Source / Web Research</b></td>
+    <td align="center"><b>Notebook Query (Q&A)</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/imgs/add-source.png" width="480" /></td>
+    <td><img src="docs/imgs/query-panel.png" width="480" /></td>
+  </tr>
+</table>
 
 ## Features
 
