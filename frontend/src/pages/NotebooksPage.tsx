@@ -178,7 +178,7 @@ export default function NotebooksPage() {
 
         {/* Cleanup sidebar */}
         <div className="hidden w-80 shrink-0 lg:block">
-          <div className="sticky top-20">
+          <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
             <button
               onClick={() => setShowCleanup(!showCleanup)}
               className="mb-3 flex w-full items-center justify-between rounded-lg px-1 text-sm font-medium text-gray-600 hover:text-gray-900"
