@@ -1,4 +1,5 @@
 import SearchInput from "../ui/SearchInput";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 type ViewMode = "card" | "table" | "list";
 type SortKey = "title" | "created_at" | "updated_at" | "source_count";
@@ -37,10 +38,12 @@ export default function NotebookToolbar({
   onToggleRangeMode,
   onCreateNotebook,
 }: NotebookToolbarProps) {
-  const viewOptions: { mode: ViewMode; title: string; icon: React.ReactNode }[] = [
+  const { t } = useLanguage();
+
+  const viewOptions: { mode: ViewMode; titleKey: string; icon: React.ReactNode }[] = [
     {
       mode: "list",
-      title: "리스트",
+      titleKey: "toolbar.list",
       icon: (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -49,7 +52,7 @@ export default function NotebookToolbar({
     },
     {
       mode: "card",
-      title: "카드",
+      titleKey: "toolbar.card",
       icon: (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -58,7 +61,7 @@ export default function NotebookToolbar({
     },
     {
       mode: "table",
-      title: "테이블",
+      titleKey: "toolbar.table",
       icon: (
         <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -75,12 +78,12 @@ export default function NotebookToolbar({
           <SearchInput
             value={search}
             onChange={onSearchChange}
-            placeholder="노트북 검색..."
+            placeholder={t("toolbar.search")}
           />
         </div>
         {totalCount !== undefined && (
-          <span className="whitespace-nowrap text-sm tabular-nums text-gray-400">
-            {totalCount}개
+          <span className="whitespace-nowrap text-sm tabular-nums text-gray-400 dark:text-gray-500">
+            {t("notebooks.count", { count: totalCount })}
           </span>
         )}
         {onCreateNotebook && (
@@ -91,7 +94,7 @@ export default function NotebookToolbar({
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
-            새 노트북
+            {t("toolbar.newNotebook")}
           </button>
         )}
       </div>
@@ -104,10 +107,10 @@ export default function NotebookToolbar({
             onClick={onToggleRangeMode}
             className={`rounded-lg border p-2 transition-colors ${
               rangeMode
-                ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                ? "border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
+                : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
             }`}
-            title={rangeMode ? "구간 선택 중 (클릭하여 해제)" : "구간 선택"}
+            title={rangeMode ? t("toolbar.rangeSelecting") : t("toolbar.rangeSelect")}
           >
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h8m-8 5h8m-8 5h8M5 7h.01M5 12h.01M5 17h.01" />
@@ -120,8 +123,8 @@ export default function NotebookToolbar({
           <button
             onClick={onRefresh}
             disabled={isRefreshing}
-            className="rounded-lg border border-gray-200 bg-white p-2 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50"
-            title="새로고침"
+            className="rounded-lg border border-gray-200 bg-white p-2 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+            title={t("toolbar.refresh")}
           >
             <svg
               className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
@@ -140,24 +143,24 @@ export default function NotebookToolbar({
         )}
 
         {/* Divider */}
-        <div className="mx-1 h-5 w-px bg-gray-200" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
 
         {/* Sort */}
         <select
           value={sortKey}
           onChange={(e) => onSortChange(e.target.value as SortKey)}
-          className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-gray-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20"
+          className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs text-gray-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
         >
-          <option value="updated_at">수정일</option>
-          <option value="created_at">생성일</option>
-          <option value="title">이름</option>
-          <option value="source_count">소스 수</option>
+          <option value="updated_at">{t("toolbar.sortModified")}</option>
+          <option value="created_at">{t("toolbar.sortCreated")}</option>
+          <option value="title">{t("toolbar.sortName")}</option>
+          <option value="source_count">{t("toolbar.sortSources")}</option>
         </select>
 
         <button
           onClick={() => onSortOrderChange(sortOrder === "desc" ? "asc" : "desc")}
-          className="rounded-lg border border-gray-200 bg-white p-2 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
-          title={sortOrder === "desc" ? "내림차순" : "오름차순"}
+          className="rounded-lg border border-gray-200 bg-white p-2 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+          title={sortOrder === "desc" ? t("toolbar.descending") : t("toolbar.ascending")}
         >
           <svg
             className={`h-4 w-4 transition-transform ${sortOrder === "asc" ? "rotate-180" : ""}`}
@@ -170,20 +173,20 @@ export default function NotebookToolbar({
         </button>
 
         {/* Divider */}
-        <div className="mx-1 h-5 w-px bg-gray-200" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-gray-700" />
 
         {/* View toggle */}
-        <div className="flex rounded-lg border border-gray-200">
-          {viewOptions.map(({ mode, title, icon }, idx) => (
+        <div className="flex rounded-lg border border-gray-200 dark:border-gray-600">
+          {viewOptions.map(({ mode, titleKey, icon }, idx) => (
             <button
               key={mode}
               onClick={() => onViewModeChange(mode)}
               className={`p-2 transition-colors ${
                 viewMode === mode
-                  ? "bg-indigo-50 text-indigo-600"
-                  : "text-gray-400 hover:text-gray-600"
+                  ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300"
+                  : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
               } ${idx === 0 ? "rounded-l-lg" : ""} ${idx === viewOptions.length - 1 ? "rounded-r-lg" : ""}`}
-              title={title}
+              title={t(titleKey)}
             >
               {icon}
             </button>
@@ -192,8 +195,8 @@ export default function NotebookToolbar({
 
         {/* Range mode indicator */}
         {rangeMode && (
-          <span className="ml-1 text-xs font-medium text-indigo-600">
-            구간 선택 중
+          <span className="ml-1 text-xs font-medium text-indigo-600 dark:text-indigo-400">
+            {t("toolbar.rangeSelecting")}
           </span>
         )}
       </div>

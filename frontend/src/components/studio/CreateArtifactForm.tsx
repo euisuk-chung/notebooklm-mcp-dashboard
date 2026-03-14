@@ -4,6 +4,7 @@ import { ARTIFACT_OPTIONS } from "../../types/studio";
 import { ARTIFACT_CONFIGS } from "../../utils/constants";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface CreateArtifactFormProps {
   type: ArtifactType;
@@ -11,21 +12,6 @@ interface CreateArtifactFormProps {
   onCancel: () => void;
   isCreating: boolean;
 }
-
-const OPTION_LABELS: Record<string, string> = {
-  formats: "포맷",
-  styles: "스타일",
-  voice_count: "음성 수",
-  resolution: "해상도",
-  length: "길이",
-  question_types: "문제 유형",
-  difficulty: "난이도",
-  question_count: "문제 수",
-  card_count: "카드 수",
-  depth: "깊이",
-  slide_count: "슬라이드 수",
-  orientation: "방향",
-};
 
 export default function CreateArtifactForm({
   type,
@@ -36,6 +22,7 @@ export default function CreateArtifactForm({
   const config = ARTIFACT_CONFIGS[type];
   const options = ARTIFACT_OPTIONS[type] as Record<string, unknown[]>;
   const optionKeys = Object.keys(options);
+  const { t } = useLanguage();
 
   const [selected, setSelected] = useState<Record<string, unknown>>(() => {
     const defaults: Record<string, unknown> = {};
@@ -53,20 +40,21 @@ export default function CreateArtifactForm({
       <div className="flex items-center gap-3">
         <span className="text-2xl">{config.emoji}</span>
         <div>
-          <h3 className="text-base font-semibold text-gray-900">
-            {config.label} 생성
+          <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+            {t("studio.generating", { label: t(config.labelKey) })}
           </h3>
-          <p className="text-xs text-gray-500">{config.description}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{t(config.descriptionKey)}</p>
         </div>
       </div>
 
       <div className="mt-4 space-y-4">
         {optionKeys.map((key) => {
           const values = options[key] as (string | number)[];
+          const optionLabelKey = `option.${key}`;
           return (
             <div key={key}>
-              <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                {OPTION_LABELS[key] ?? key}
+              <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t(optionLabelKey) !== optionLabelKey ? t(optionLabelKey) : key}
               </label>
               <select
                 value={String(selected[key] ?? "")}
@@ -76,7 +64,7 @@ export default function CreateArtifactForm({
                     typeof values[0] === "number" ? Number(raw) : raw;
                   setSelected((prev) => ({ ...prev, [key]: parsed }));
                 }}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
               >
                 {values.map((v) => (
                   <option key={String(v)} value={String(v)}>
@@ -91,10 +79,10 @@ export default function CreateArtifactForm({
 
       <div className="mt-5 flex justify-end gap-2">
         <Button variant="ghost" onClick={onCancel} disabled={isCreating}>
-          취소
+          {t("studio.cancel")}
         </Button>
         <Button onClick={() => onSubmit(selected)} loading={isCreating}>
-          생성하기
+          {t("studio.create")}
         </Button>
       </div>
     </Card>

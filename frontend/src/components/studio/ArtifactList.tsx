@@ -1,6 +1,7 @@
 import type { Artifact } from "../../types/studio";
 import ArtifactCard from "./ArtifactCard";
 import Spinner from "../ui/Spinner";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface ArtifactListProps {
   artifacts: Artifact[];
@@ -15,6 +16,8 @@ export default function ArtifactList({
   onDelete,
   isLoading,
 }: ArtifactListProps) {
+  const { t } = useLanguage();
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -25,12 +28,12 @@ export default function ArtifactList({
 
   if (artifacts.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 bg-white py-10 text-center">
-        <p className="text-sm text-gray-500">
-          생성된 콘텐츠가 없습니다
+      <div className="rounded-xl border border-dashed border-gray-300 bg-white py-10 text-center dark:border-gray-600 dark:bg-gray-900">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t("studio.empty")}
         </p>
-        <p className="mt-1 text-xs text-gray-400">
-          위에서 유형을 선택하여 콘텐츠를 생성해보세요
+        <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+          {t("studio.emptyHint")}
         </p>
       </div>
     );

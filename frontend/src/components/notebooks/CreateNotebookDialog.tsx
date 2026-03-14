@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import Button from "../ui/Button";
 import { useCreateNotebook } from "../../hooks/useNotebooks";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface CreateNotebookDialogProps {
   open: boolean;
@@ -12,6 +13,7 @@ export default function CreateNotebookDialog({ open, onClose }: CreateNotebookDi
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const mutation = useCreateNotebook();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const el = dialogRef.current;
@@ -46,31 +48,31 @@ export default function CreateNotebookDialog({ open, onClose }: CreateNotebookDi
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 z-50 m-auto w-full max-w-md rounded-xl border border-gray-200 bg-white p-0 shadow-xl backdrop:bg-black/40"
+      className="fixed inset-0 z-50 m-auto w-full max-w-md rounded-xl border border-gray-200 bg-white p-0 shadow-xl backdrop:bg-black/40 dark:border-gray-700 dark:bg-gray-900"
       onClose={onClose}
     >
       <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900">새 노트북 만들기</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t("create.title")}</h3>
         <div className="mt-4">
           <input
             ref={inputRef}
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="노트북 제목을 입력하세요"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+            placeholder={t("create.placeholder")}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
           />
         </div>
         {mutation.isError && (
-          <p className="mt-2 text-xs text-red-600">노트북 생성에 실패했습니다. 다시 시도해주세요.</p>
+          <p className="mt-2 text-xs text-red-600">{t("create.error")}</p>
         )}
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="ghost" onClick={onClose} disabled={mutation.isPending}>
-            취소
+            {t("create.cancel")}
           </Button>
           <Button onClick={handleCreate} loading={mutation.isPending} disabled={!title.trim()}>
-            만들기
+            {t("create.submit")}
           </Button>
         </div>
       </div>

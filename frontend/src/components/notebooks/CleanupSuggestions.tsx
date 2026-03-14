@@ -3,7 +3,8 @@ import type { CleanupSuggestion } from "../../types/notebook";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
 import Dialog from "../ui/Dialog";
-import { formatRelativeTime } from "../../utils/formatters";
+import { formatRelativeTimeI18n } from "../../utils/formatters";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface CleanupSuggestionsProps {
   suggestions: CleanupSuggestion[];
@@ -19,6 +20,7 @@ export default function CleanupSuggestions({
   isDeleting,
 }: CleanupSuggestionsProps) {
   const [showConfirm, setShowConfirm] = useState(false);
+  const { t, lang } = useLanguage();
 
   if (suggestions.length === 0) return null;
 
@@ -26,8 +28,8 @@ export default function CleanupSuggestions({
     <>
       <Card>
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-gray-900">
-            정리 제안
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {t("cleanup.title")}
           </h3>
           <Button
             variant="danger"
@@ -35,26 +37,26 @@ export default function CleanupSuggestions({
             onClick={() => setShowConfirm(true)}
             loading={isDeleting}
           >
-            전체 삭제
+            {t("cleanup.deleteAll")}
           </Button>
         </div>
-        <p className="mt-1 text-xs text-gray-500">
-          오랫동안 사용하지 않은 노트북입니다
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          {t("cleanup.description")}
         </p>
-        <ul className="mt-3 divide-y divide-gray-100">
+        <ul className="mt-3 divide-y divide-gray-100 dark:divide-gray-800">
           {suggestions.map((s) => (
             <li
               key={s.notebook_id}
               className="flex items-center justify-between py-2.5"
             >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-800">
+                <p className="truncate text-sm font-medium text-gray-800 dark:text-gray-200">
                   {s.title}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-400 dark:text-gray-500">
                   {s.reason}
                   {s.last_accessed && (
-                    <> &middot; {formatRelativeTime(s.last_accessed)}</>
+                    <> &middot; {formatRelativeTimeI18n(s.last_accessed, t, lang)}</>
                   )}
                 </p>
               </div>
@@ -64,7 +66,7 @@ export default function CleanupSuggestions({
                 onClick={() => onDelete(s.notebook_id)}
                 className="ml-2 shrink-0 text-red-500"
               >
-                삭제
+                {t("common.delete")}
               </Button>
             </li>
           ))}
@@ -78,9 +80,9 @@ export default function CleanupSuggestions({
           onDeleteAll(suggestions.map((s) => s.notebook_id));
           setShowConfirm(false);
         }}
-        title="전체 정리"
-        message={`제안된 ${suggestions.length}개의 노트북을 모두 삭제하시겠습니까?`}
-        confirmLabel="전체 삭제"
+        title={t("cleanup.confirmTitle")}
+        message={t("cleanup.confirmMessage", { count: suggestions.length })}
+        confirmLabel={t("cleanup.deleteAll")}
         loading={isDeleting}
       />
     </>

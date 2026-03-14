@@ -28,7 +28,7 @@ export default function Checkbox({
         className={`flex h-4 w-4 items-center justify-center rounded border transition-colors ${
           checked
             ? "border-indigo-600 bg-indigo-600"
-            : "border-gray-300 bg-white hover:border-gray-400"
+            : "border-gray-300 bg-white hover:border-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
         }`}
       >
         {checked && (
@@ -37,7 +37,7 @@ export default function Checkbox({
           </svg>
         )}
       </span>
-      {label && <span className="text-sm text-gray-700">{label}</span>}
+      {label && <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>}
     </span>
   );
 }

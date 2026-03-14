@@ -17,6 +17,7 @@ import { useBulkSelect } from "../hooks/useBulkSelect";
 import { useBulkCreateArtifact } from "../hooks/useStudio";
 import Button from "../components/ui/Button";
 import type { Notebook } from "../types/notebook";
+import { useLanguage } from "../contexts/LanguageContext";
 
 type ViewMode = "card" | "table" | "list";
 type SortKey = "title" | "created_at" | "updated_at" | "source_count";
@@ -30,6 +31,7 @@ export default function NotebooksPage() {
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [showCleanup, setShowCleanup] = useState(false);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const { t } = useLanguage();
 
   const {
     data: notebooksData,
@@ -51,13 +53,13 @@ export default function NotebooksPage() {
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
-        (nb) =>
+        (nb: Notebook) =>
           nb.title.toLowerCase().includes(q) ||
-          nb.tags.some((t) => t.toLowerCase().includes(q))
+          nb.tags.some((tg: string) => tg.toLowerCase().includes(q))
       );
     }
 
-    list.sort((a, b) => {
+    list.sort((a: Notebook, b: Notebook) => {
       let cmp = 0;
       switch (sortKey) {
         case "title":
@@ -80,7 +82,7 @@ export default function NotebooksPage() {
     return list;
   }, [notebooks, search, sortKey, sortOrder]);
 
-  const allIds = useMemo(() => filtered.map((nb) => nb.id), [filtered]);
+  const allIds = useMemo(() => filtered.map((nb: Notebook) => nb.id), [filtered]);
   const bulk = useBulkSelect(allIds);
 
   const handleDeleteSingle = useCallback((id: string) => {
@@ -143,23 +145,23 @@ export default function NotebooksPage() {
           />
 
           {notebooksError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950">
               <div className="flex items-start gap-3">
                 <svg className="mt-0.5 h-5 w-5 shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-red-800">노트북을 불러올 수 없습니다</p>
-                  <p className="mt-1 text-xs text-red-600">
-                    인증이 만료되었을 수 있습니다. 터미널에서 <code className="rounded bg-red-100 px-1 py-0.5 font-mono">nlm login</code>을 실행한 후 새로고침하세요.
+                  <p className="text-sm font-medium text-red-800 dark:text-red-200">{t("notebooks.loadError")}</p>
+                  <p className="mt-1 text-xs text-red-600 dark:text-red-400">
+                    {t("notebooks.authExpired")} <code className="rounded bg-red-100 px-1 py-0.5 font-mono dark:bg-red-900">nlm login</code>
                   </p>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleRefresh}
-                    className="mt-2 text-red-700 hover:text-red-900"
+                    className="mt-2 text-red-700 hover:text-red-900 dark:text-red-300 dark:hover:text-red-100"
                   >
-                    다시 시도
+                    {t("notebooks.retry")}
                   </Button>
                 </div>
               </div>
@@ -181,9 +183,9 @@ export default function NotebooksPage() {
           <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
             <button
               onClick={() => setShowCleanup(!showCleanup)}
-              className="mb-3 flex w-full items-center justify-between rounded-lg px-1 text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="mb-3 flex w-full items-center justify-between rounded-lg px-1 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
             >
-              <span>정리 제안</span>
+              <span>{t("notebooks.cleanup")}</span>
               <svg
                 className={`h-4 w-4 transition-transform ${showCleanup ? "rotate-180" : ""}`}
                 fill="none"
@@ -219,9 +221,9 @@ export default function NotebooksPage() {
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
         onConfirm={confirmDeleteSingle}
-        title="노트북 삭제"
-        message="이 노트북을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
-        confirmLabel="삭제"
+        title={t("delete.title")}
+        message={t("delete.message")}
+        confirmLabel={t("common.delete")}
         loading={deleteMutation.isPending}
       />
 

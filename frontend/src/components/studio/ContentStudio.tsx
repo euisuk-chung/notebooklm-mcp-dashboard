@@ -5,6 +5,7 @@ import { ARTIFACT_CONFIGS } from "../../utils/constants";
 import ArtifactTypeCard from "./ArtifactTypeCard";
 import CreateArtifactForm from "./CreateArtifactForm";
 import ArtifactList from "./ArtifactList";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface ContentStudioProps {
   notebookId: string;
@@ -17,6 +18,7 @@ export default function ContentStudio({ notebookId }: ContentStudioProps) {
   const { data: studioData, isLoading } = useStudioStatus(notebookId);
   const createMutation = useCreateArtifact(notebookId);
   const deleteMutation = useDeleteArtifact(notebookId);
+  const { t } = useLanguage();
 
   const handleCreate = (options: Record<string, unknown>) => {
     if (!selectedType) return;
@@ -29,9 +31,9 @@ export default function ContentStudio({ notebookId }: ContentStudioProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Content Studio</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          노트북의 내용을 다양한 형태로 변환합니다
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{t("studio.title")}</h2>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          {t("studio.description")}
         </p>
       </div>
 
@@ -55,8 +57,8 @@ export default function ContentStudio({ notebookId }: ContentStudioProps) {
       )}
 
       <div>
-        <h3 className="mb-3 text-sm font-semibold text-gray-700">
-          생성된 콘텐츠
+        <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          {t("studio.generated")}
         </h3>
         <ArtifactList
           artifacts={studioData?.artifacts ?? []}

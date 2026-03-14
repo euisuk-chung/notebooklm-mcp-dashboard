@@ -2,6 +2,7 @@ import Card from "../ui/Card";
 import ProgressBar from "../ui/ProgressBar";
 import Spinner from "../ui/Spinner";
 import type { UsageInfo } from "../../types/notebook";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 interface UsageDisplayProps {
   usage: UsageInfo | undefined;
@@ -9,11 +10,13 @@ interface UsageDisplayProps {
 }
 
 export default function UsageDisplay({ usage, isLoading }: UsageDisplayProps) {
+  const { t } = useLanguage();
+
   if (isLoading) {
     return (
       <Card className="flex items-center gap-3">
         <Spinner size="sm" />
-        <span className="text-sm text-gray-400">사용량 로딩 중...</span>
+        <span className="text-sm text-gray-400 dark:text-gray-500">{t("usage.loading")}</span>
       </Card>
     );
   }
@@ -29,10 +32,10 @@ export default function UsageDisplay({ usage, isLoading }: UsageDisplayProps) {
   return (
     <Card>
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-medium text-gray-700">노트북 사용량</h3>
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("usage.title")}</h3>
         {isWarning && (
-          <span className="text-xs font-medium text-amber-600">
-            용량이 거의 찼습니다
+          <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
+            {t("usage.almostFull")}
           </span>
         )}
       </div>
