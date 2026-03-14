@@ -1,20 +1,29 @@
 # NotebookLM MCP Dashboard
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Powered by notebooklm-mcp-cli](https://img.shields.io/pypi/v/notebooklm-mcp-cli?label=notebooklm-mcp-cli&color=blue)](https://pypi.org/project/notebooklm-mcp-cli/)
+
+[English](README_EN.md) | **한국어**
+
 > Google NotebookLM을 더 쉽고 빠르게 관리하는 개인용 웹 대시보드
 
-NotebookLM의 불편한 점들(검색 불가, 일괄 삭제 불가, 노트북 개수 제한 관리 어려움)을 해결하기 위해 만든 웹 대시보드입니다. [notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli) 패키지의 CLI를 백엔드에서 호출하여 NotebookLM API에 접근합니다.
+NotebookLM의 불편한 점들(검색 불가, 일괄 삭제 불가, 노트북 개수 제한 관리 어려움)을 해결하기 위해 만든 웹 대시보드입니다. [notebooklm-mcp-cli](https://github.com/PleasePrompto/notebooklm-mcp) 패키지의 CLI를 백엔드에서 호출하여 NotebookLM API에 접근합니다.
 
 ## Screenshots
 
-<!-- 스크린샷을 docs/images/ 폴더에 넣고 아래 주석을 교체하세요 -->
+<!-- 스크린샷을 docs/imgs/ 폴더에 넣으세요 -->
 
 | 노트북 목록 (리스트 뷰) | 노트북 상세 + 콘텐츠 스튜디오 |
 |:---:|:---:|
-| ![Notebook List](docs/images/notebook-list.png) | ![Notebook Detail](docs/images/notebook-detail.png) |
+| ![Notebook List](docs/imgs/notebook-list.png) | ![Notebook Detail](docs/imgs/notebook-detail.png) |
 
 | 소스 추가 / 웹 리서치 | 노트북 질의 (Q&A) |
 |:---:|:---:|
-| ![Add Source](docs/images/add-source.png) | ![Query Panel](docs/images/query-panel.png) |
+| ![Add Source](docs/imgs/add-source.png) | ![Query Panel](docs/imgs/query-panel.png) |
 
 ## Features
 

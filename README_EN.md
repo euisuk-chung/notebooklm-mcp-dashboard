@@ -1,22 +1,29 @@
 # NotebookLM MCP Dashboard
 
-> [Korean README (한국어)](README.md) | The dashboard UI supports both English and Korean via a language toggle.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Powered by notebooklm-mcp-cli](https://img.shields.io/pypi/v/notebooklm-mcp-cli?label=notebooklm-mcp-cli&color=blue)](https://pypi.org/project/notebooklm-mcp-cli/)
 
-> A personal web dashboard for managing Google NotebookLM more easily and efficiently
+**English** | [한국어](README.md)
 
-A web dashboard built to address common pain points with NotebookLM — no search, no bulk delete, and difficulty managing notebook count limits. It calls the [notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli) CLI as a backend subprocess to access the NotebookLM API.
+> A personal web dashboard for managing Google NotebookLM more easily and efficiently. The dashboard UI supports both English and Korean via a language toggle.
+
+A web dashboard built to address common pain points with NotebookLM — no search, no bulk delete, and difficulty managing notebook count limits. It calls the [notebooklm-mcp-cli](https://github.com/PleasePrompto/notebooklm-mcp) CLI as a backend subprocess to access the NotebookLM API.
 
 ## Screenshots
 
-<!-- Place screenshots in the docs/images/ folder and replace the comments below -->
+<!-- Place screenshots in the docs/imgs/ folder -->
 
 | Notebook List (List View) | Notebook Detail + Content Studio |
 |:---:|:---:|
-| ![Notebook List](docs/images/notebook-list.png) | ![Notebook Detail](docs/images/notebook-detail.png) |
+| ![Notebook List](docs/imgs/notebook-list.png) | ![Notebook Detail](docs/imgs/notebook-detail.png) |
 
 | Add Source / Web Research | Notebook Query (Q&A) |
 |:---:|:---:|
-| ![Add Source](docs/images/add-source.png) | ![Query Panel](docs/images/query-panel.png) |
+| ![Add Source](docs/imgs/add-source.png) | ![Query Panel](docs/imgs/query-panel.png) |
 
 ## Features
 
