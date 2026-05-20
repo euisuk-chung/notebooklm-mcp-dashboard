@@ -214,3 +214,6 @@ frontend/.vite/
 
 # Skill workspace (test artifacts)
 notebooklm-mcp-workspace/
+
+# Auto-start launcher logs
+.logs/

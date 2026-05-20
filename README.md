@@ -126,6 +126,28 @@ cd frontend && npm install && cd ..
 
 ### 3. 실행
 
+**옵션 A — 한 번에 실행 (권장)**
+
+플랫폼별 launcher 스크립트가 백엔드/프론트엔드를 분리된 hidden 프로세스로 띄우고, 출력을 `.logs/` 폴더에 저장합니다. 이미 포트(8000/5173)가 점유돼 있으면 자동으로 skip합니다.
+
+```bat
+:: Windows — 더블클릭 또는 cmd에서
+start-dashboard.bat
+```
+
+```powershell
+# Windows — PowerShell에서 직접 호출하고 싶을 때
+powershell -ExecutionPolicy Bypass -File start-dashboard.ps1
+```
+
+```bash
+# macOS / Linux
+chmod +x start-dashboard.sh   # 최초 1회
+./start-dashboard.sh
+```
+
+**옵션 B — 터미널 두 개로 수동 실행**
+
 ```bash
 # 터미널 1: 백엔드
 cd backend
@@ -136,9 +158,90 @@ cd frontend
 npm run dev
 ```
 
-`http://localhost:5173` 에서 대시보드에 접속합니다.
+### 4. 접속
 
-같은 네트워크의 다른 기기에서도 `http://<your-ip>:5173` 으로 접근 가능합니다.
+| 위치 | URL |
+|------|-----|
+| 이 컴퓨터 | http://localhost:5173/ |
+| 같은 네트워크의 다른 기기 | `http://<your-LAN-IP>:5173/` |
+| API 문서 (Swagger) | http://localhost:8000/docs |
+
+LAN IP 확인:
+- Windows: `ipconfig` → IPv4 Address
+- macOS/Linux: `ifconfig | grep inet` 또는 `ip addr`
+
+**최초 접속 시** 상단에 "인증 안 됨" 안내가 뜨면 터미널에서 `nlm login` 한 번 실행하세요 (Google 계정 인증 브라우저 창이 열림). 쿠키는 `~/.notebooklm-mcp-cli/`에 저장되며 2-4주 후 만료됩니다.
+
+## 자동 실행 (Autostart)
+
+PC 부팅 시 dashboard가 자동으로 떠 있게 하려면:
+
+### Windows — Task Scheduler
+
+```powershell
+$action = New-ScheduledTaskAction -Execute 'powershell.exe' `
+  -Argument '-WindowStyle Hidden -ExecutionPolicy Bypass -File "<레포 경로>\start-dashboard.ps1"'
+$trigger = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries `
+  -DontStopIfGoingOnBatteries -Hidden -ExecutionTimeLimit (New-TimeSpan -Seconds 0)
+Register-ScheduledTask -TaskName 'NotebookLM Dashboard Auto Start' `
+  -Action $action -Trigger $trigger -Settings $settings -Force
+```
+
+- 로그온 직후 hidden window로 자동 기동
+- 임시로 끄려면: `Disable-ScheduledTask -TaskName 'NotebookLM Dashboard Auto Start'`
+- 완전 제거: `Unregister-ScheduledTask -TaskName 'NotebookLM Dashboard Auto Start' -Confirm:$false`
+
+### macOS — launchd
+
+`~/Library/LaunchAgents/com.user.notebooklm-dashboard.plist`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.user.notebooklm-dashboard</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/<USER>/path/to/notebooklm-mcp-dashboard/start-dashboard.sh</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><false/>
+</dict>
+</plist>
+```
+
+```bash
+launchctl load ~/Library/LaunchAgents/com.user.notebooklm-dashboard.plist
+# 끄려면: launchctl unload ~/Library/LaunchAgents/com.user.notebooklm-dashboard.plist
+```
+
+### Linux — systemd user service
+
+`~/.config/systemd/user/notebooklm-dashboard.service`:
+
+```ini
+[Unit]
+Description=NotebookLM MCP Dashboard
+After=network-online.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash %h/path/to/notebooklm-mcp-dashboard/start-dashboard.sh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+```
+
+```bash
+systemctl --user enable --now notebooklm-dashboard.service
+```
+
+> Launcher 자체는 `.logs/` 폴더에 stdout/stderr를 분리 저장합니다. 자동 실행이 안 되면 `.logs/backend.err.log`, `.logs/frontend.err.log`를 먼저 확인하세요.
 
 ## API Reference
 
@@ -172,6 +275,9 @@ notebooklm-mcp-dashboard/
 │       ├── components/     # UI, notebooks, sources, studio
 │       ├── pages/          # NotebooksPage, NotebookDetailPage
 │       └── utils/          # 상수, 포맷터
+├── start-dashboard.ps1     # 백엔드+프론트엔드 통합 launcher (Windows, Task Scheduler용)
+├── start-dashboard.bat     #  └ Windows 더블클릭 wrapper
+├── start-dashboard.sh      #  └ macOS / Linux 버전
 ├── docs/                   # notebooklm-mcp-cli 원본 문서
 ├── notebooklm-mcp/         # Claude Code 스킬
 └── CLAUDE.md               # 상세 아키텍처 문서
