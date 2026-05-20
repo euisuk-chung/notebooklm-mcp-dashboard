@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import shutil
 from typing import Any, Optional
 
@@ -45,21 +46,30 @@ class NLMClientWrapper:
             self._nlm_bin = shutil.which("nlm")
         bin_path = self._nlm_bin or "nlm"
 
+        # Force UTF-8 for the subprocess so rich/console output (e.g. ✓, ✗)
+        # is not corrupted by Windows cp949 codepage, which causes nlm to
+        # raise UnicodeEncodeError and exit 1 *after* successfully performing
+        # the underlying action (delete, create, etc).
+        env = os.environ.copy()
+        env["PYTHONIOENCODING"] = "utf-8"
+        env["PYTHONUTF8"] = "1"
+
         proc = await asyncio.create_subprocess_exec(
             bin_path,
             *args,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
+            env=env,
         )
         stdout, stderr = await proc.communicate()
 
         if proc.returncode != 0:
-            err_msg = stderr.decode().strip() if stderr else "unknown error"
+            err_msg = stderr.decode("utf-8", errors="replace").strip() if stderr else "unknown error"
             raise NLMClientError(
                 f"nlm {' '.join(args)} failed (exit {proc.returncode}): {err_msg}"
             )
 
-        raw = stdout.decode().strip()
+        raw = stdout.decode("utf-8", errors="replace").strip()
         if not raw:
             return {} if parse_json else ""
 
